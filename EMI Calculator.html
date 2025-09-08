@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EMI Calculator UI</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        background: #f8f9fa;
+      }
+      .slider-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .slider-input {
+        min-width: 70px;
+      }
+      .card-emi {
+        background: #222;
+        color: #fff;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+      }
+      .btn-apply {
+        background: #ffcc00;
+        color: #000;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid py-5">
+      <div class="row g-4">
+        <div class="col-lg-7 bg-white p-4 rounded shadow-sm">
+          <div class="mb-4">
+            <div class="slider-label mb-1">
+              <div>
+                <strong>Loan Amount</strong>
+                <span data-bs-toggle="tooltip" title="Loan amount you need"
+                  >?</span
+                >
+              </div>
+              <div class="d-flex align-items-center">
+                <input
+                  type="number"
+                  id="loanAmount"
+                  class="form-control slider-input me-2"
+                  value="6000"
+                />
+                <span>₹</span>
+              </div>
+            </div>
+            <input
+              type="range"
+              id="loanRange"
+              class="form-range"
+              min="1000"
+              max="1000000"
+              step="1000"
+            />
+          </div>
+          <div class="mb-4">
+            <div class="slider-label mb-1">
+              <div>
+                <strong>Rate Of Interest</strong>
+                <span data-bs-toggle="tooltip" title="Annual interest rate"
+                  >?</span
+                >
+              </div>
+              <div class="d-flex align-items-center">
+                <input
+                  type="number"
+                  id="interestRate"
+                  class="form-control slider-input me-2"
+                  value="12"
+                  step="0.1"
+                />
+                <span>%</span>
+              </div>
+            </div>
+            <input
+              type="range"
+              id="interestRange"
+              class="form-range"
+              min="0"
+              max="28.5"
+              step="0.1"
+            />
+          </div>
+          <div class="mb-4">
+            <div class="slider-label mb-1">
+              <div>
+                <strong>Tenure</strong>
+                <span data-bs-toggle="tooltip" title="Loan duration">?</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <input
+                  type="number"
+                  id="tenure"
+                  class="form-control slider-input me-2"
+                  value="6"
+                />
+                <select id="tenureUnit" class="form-select" style="width: auto">
+                  <option value="months">Mo</option>
+                  <option value="years">Yr</option>
+                </select>
+              </div>
+            </div>
+            <input
+              type="range"
+              id="tenureRange"
+              class="form-range"
+              min="6"
+              max="60"
+              step="1"
+            />
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="card-emi">
+            <h5>Equated Monthly Installments (EMI)</h5>
+            <div class="d-flex justify-content-between mt-3">
+              <span>₹ <span id="emiAmount">0</span></span>
+              <span>Total Amt Payable ₹ <span id="totalPayable">0</span></span>
+            </div>
+            <button class="btn btn-apply w-100 mt-4">Apply Now</button>
+          </div>
+          <a href="#" class="d-block mt-3 fw-bold text-warning"
+            >View EMI Schedule</a
+          >
+          <div class="row mt-4">
+            <div class="col">
+              <div class="bg-white p-3 rounded shadow-sm text-center">
+                <div style="font-size: 2rem">
+                  <img class="w-75" src="assests/halfRR.svg" alt="" />
+                </div>
+                <p>Principal ₹<span id="principal">0</span></p>
+                <p>Interest ₹<span id="interestTotal">0</span></p>
+              </div>
+            </div>
+            <div class="col">
+              <div class="bg-white p-3 rounded shadow-sm text-center">
+                <img
+                  src="assests/score.svg"
+                  alt="credit score graphic"
+                  class="mb-3"
+                />
+                <p>Know your Credit Score</p>
+                <button class="btn btn-apply">Check Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid py-5">
+      <h4>EMI Payments’ Schedule</h4>
+      <hr />
+
+      <div class="table-responsive">
+        <table class="table table-hover table-group-divider align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 1%"></th>
+              <th scope="col">Year</th>
+              <th scope="col" class="hdr-principal">Principal (A)</th>
+              <th scope="col" class="hdr-interest">Interest (B)</th>
+              <th scope="col">Total Payment (A + B)</th>
+              <th scope="col" class="hdr-balance">Balance</th>
+              <th scope="col">Loan Paid to date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Year 2025 summary -->
+            <tr class="table-active">
+              <td>
+                <button
+                  class="disclosure"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#yr2025"
+                  aria-expanded="false"
+                  aria-label="Toggle row details"
+                >
+                  +
+                </button>
+              </td>
+              <td>2025</td>
+              <td>₹ 6,000</td>
+              <td>₹ 210</td>
+              <td>₹ 6,210</td>
+              <td>₹ 0</td>
+              <td>100.00 %</td>
+            </tr>
+
+            <!-- Expandable details for 2025 -->
+            <tr class="collapse-row collapse" id="yr2025">
+              <td colspan="7">
+                <div class="p-3">
+                  <strong>Details:</strong>
+                  <ul class="mb-0">
+                    <li>EMI paid: ₹ 1,035 × 6 = ₹ 6,210</li>
+                    <li>Total interest included: ₹ 210</li>
+                    <li>Loan fully paid off</li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- <section class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4">
+            <button class="arrow">HDFC Loan EMI 
+                <br>Calculator  <img src="assests/arrow.svg" alt=""></button>
+        </div>
+    </div>
+
+</section> -->
+    <!-- ===== Loan Calculator Card Grid ===== -->
+
+    <section class="container">
+      <h3 class="border-bottom-yellow">What is an EMI Calculator?</h3>
+      <p class="mt-3">
+        An EMI calculator is a useful financial tool that helps individuals
+        calculate their Equated Monthly Instalments (EMIs) for loans such as
+        personal loans, car loans, home loans, and more. By considering factors
+        like loan amount, interest rate, and tenure, it helps calculate an
+        estimated instalment amount that you can pay comfortably on a
+        month-on-month basis
+      </p>
+    </section>
+
+     <section class="container mt-5">
+      <h3 class="border-bottom-yellow">How to Use KreditBee's Loan EMI Calculator?</h3>
+      <p class="mt-3">
+    KreditBee's Loan EMI Calculator is a user-friendly tool that can help you easily calculate your monthly loan instalments for various loan types. Here's how you can use it:
+    <p>1.Start by selecting your loan type (e.g., personal, home, or business) directly on the EMI calculator page.</p>
+    <p>2.Fill out the required details, such as the loan amount, interest rate, and loan tenure..</p>
+    <p>3.Click on the "Calculate" button..</p>
+    <p>4.Start by selecting your loan type (e.g., personal, home, or business) directly on the EMI calculator page.</p>
+      </p>
+    </section>
+
+      <section class="container mt-5">
+      <h3 class="border-bottom-yellow">Key Features and Benefits of EMI Calculators
+</h3>
+    <ul style="line-height: 40px;">
+      <li>Ease of Use: They are simple online tools that provide quick and accurate results.</li>
+      <li>Financial Planning: They help individuals budget for their loan repayments and assess their affordability..</li>
+      <li>Ease of Use: They are simple online tools that provide quick and accurate results.</li>
+      <li>Transparency: They break down the EMI into principal and interest components, providing clarity on the loan repayment structure..</li>
+    </ul>
+    
+    </section>
+    
+    <div class="container py-4">
+      <h3 class="border-bottom-yellow">What is an EMI Calculator?</h3>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2 class="text-center mb-3">Bank EMI Calculator</h2>
+      <div
+        class="mx-auto mb-4"
+        style="width: 60px; height: 4px; background: #ffcc00"
+      ></div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5 g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="#" class="card h-100 text-decoration-none shadow-sm">
+            <div
+              class="card-body d-flex justify-content-between align-items-center"
+            >
+              <span style="font-size: 20px; font-weight: 600; line-height: 28px"
+                >Personal Loan EMI Calculator</span
+              >
+              <img src="assests/arrow.svg" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container py-5">
+      <h2 class="text-center mb-3">Frequently Asked Questions</h2>
+      <div
+        class="mx-auto mb-4"
+        style="width: 60px; height: 4px; background: #ffcc00"
+      ></div>
+
+      <details class="faq-item mb-2">
+        <summary>1. What is EMI in loan?</summary>
+        <div class="faq-content">
+          EMI stands for Equated Monthly Instalment. It’s the fixed amount you
+          pay every month towards your loan, covering both principal and
+          interest.
+        </div>
+      </details>
+
+      <details class="faq-item mb-2">
+        <summary>2. How do I calculate EMI manually?</summary>
+        <div class="faq-content"></div>
+      </details>
+
+      <details class="faq-item mb-2">
+        <summary>3. Which is the best EMI calculator?</summary>
+        <div class="faq-content">
+          The best EMi calculator clearly shows a breakdown of principal vs
+          interest, lets you adjust inputs, and provides visual charts for
+          clarity.
+        </div>
+      </details>
+
+      <details class="faq-item mb-2">
+        <summary>4. Can I reduce my EMI?</summary>
+        <div class="faq-content">
+          Yes—you can either increase the loan tenure (which lowers EMI but
+          increases total interest) or pre-pay, which reduces the total interest
+          payable.
+        </div>
+      </details>
+
+      <details class="faq-item mb-2">
+        <summary>5. What happens if I miss an EMI?</summary>
+        <div class="faq-content">
+          Missing an EMI can lead to late payment fees, a negative impact on
+          your credit score, and in severe cases, legal action.
+        </div>
+      </details>
+
+      <details class="faq-item mb-0">
+        <summary>
+          6. What are the key benefits of using an EMI calculator for a personal
+          loan?
+        </summary>
+        <div class="faq-content">
+          <ul>
+            <li>
+              Quickly estimate monthly payments based on amount, interest &amp;
+              tenure.
+            </li>
+            <li>Helps with budgeting and loan comparison.</li>
+            <li>Shows clear breakdown of principal vs interest.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <section
+      class="container-fluid text-center"
+      style="
+        background-color: rgb(103, 94, 71);
+        height: 95px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div class="row">
+        <div class="col-lg-10 col-sm-12 text-white text-center mt-3">
+          <h5>Achieve more.Start your loan today with KreditBee</h5>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+          <button
+            style="
+              background-color: rgb(253, 213, 53);
+              width: 140px;
+              height: 50px;
+              border-radius: 10px;
+              border: none;
+            "
+          >
+            Apply Now
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-section" style="background-color: #1a1a1a">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 mb-4">
+            <h1 class="font-weight-bold text-yellow mb-4">KreditBee</h1>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a href="#" class="d-flex align-items-center"
+                  ><i class="fas fa-phone-alt mr-2"></i> Contact Us</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="d-flex align-items-center"
+                  ><i class="fas fa-question-circle mr-2"></i> FAQ</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="d-flex align-items-center"
+                  ><i class="fas fa-hands-helping mr-2"></i> Responsible
+                  Lending</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="d-flex align-items-center"
+                  ><i class="fas fa-mobile-alt mr-2"></i> Instant Personal Loan
+                  App</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="d-flex align-items-center"
+                  ><i class="fas fa-briefcase mr-2"></i> Careers</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="d-flex align-items-center"
+                  ><i class="fas fa-sitemap mr-2"></i> Sitemap</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 mb-4">
+            <h5 class="font-weight-bold border-bottom-yellow mb-4">Services</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a href="#">Personal Loan</a></li>
+              <li class="mb-2"><a href="#">Flexi Personal Loan</a></li>
+              <li class="mb-2">
+                <a href="#">Personal Loan for Self-Employed</a>
+              </li>
+              <li class="mb-2"><a href="#">Flexi Personal for Salaried</a></li>
+              <li class="mb-2"><a href="#">Loan Against Property</a></li>
+              <li class="mb-2"><a href="#">Business Loan</a></li>
+              <li class="mb-2"><a href="#">Two Wheeler Loan</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 mb-4">
+            <h5 class="font-weight-bold border-bottom-yellow mb-4">
+              Our Company
+            </h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a href="#">About Us</a></li>
+              <li class="mb-2"><a href="#">Partner with us</a></li>
+              <li class="mb-2"><a href="#">Digital Lending Partners</a></li>
+              <li class="mb-2"><a href="#">Digital Lead Partner</a></li>
+              <li class="mb-2"><a href="#">Blog</a></li>
+              <li class="mb-2"><a href="#">Awards</a></li>
+              <li class="mb-2"><a href="#">News Board</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 mb-4">
+            <h5 class="font-weight-bold border-bottom-yellow mb-4">Legal</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a href="#">Terms & Conditions</a></li>
+              <li class="mb-2"><a href="#">Privacy Policy</a></li>
+              <li class="mb-2"><a href="#">Grievance Redressal</a></li>
+              <li class="mb-2">
+                <a href="#">Corporate Social Responsibility Policy</a>
+              </li>
+              <li class="mb-2"><a href="#">Security Centre</a></li>
+              <li class="mb-2"><a href="#">Corporate Information</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-3 mb-4 text-md-right">
+            <div class="app-store-buttons mb-4">
+              <a href="#" class="d-block app-store-btn"
+                ><img
+                  src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                  alt="Get it on Google Play"
+                  class="img-fluid"
+              /></a>
+              <a href="#" class="d-block app-store-btn"
+                ><img
+                  src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                  alt="Download on the App Store"
+                  class="img-fluid"
+              /></a>
+            </div>
+            <div>
+              <img
+                src="assests/ic_Twitter.svg"
+                style="width: 30px; margin-right: 5px"
+                alt=""
+              />
+              <img
+                src="assests/imgi_20_ic_Facebook.svg"
+                style="width: 30px; margin-right: 10px"
+                alt=""
+              />
+              <img
+                src="assests/imgi_21_ic_LinkedIn.svg"
+                style="width: 30px; margin-right: 15px"
+                alt=""
+              />
+              <img
+                src="assests/imgi_23_ic_Youtube.svg"
+                style="width: 30px; margin-right: 5px"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

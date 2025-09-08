@@ -1,0 +1,211 @@
+header nav {
+    color: black;
+    font-weight: 500;
+    line-height: 24px;
+    font-size: 17px;
+    font-style: normal;
+    margin-left: 55px;
+    font-family: Montserrat, sans-serif;
+}
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Montserrat, sans-serif;
+}
+
+.about{
+    background-image: url(assests/about\ us.webp);
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.refer{
+    background-image: url(assests/refer.webp);
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 65vh;
+}
+.hdr-principal { background-color: #FFEB99; }
+    .hdr-interest { background-color: #D9E8FF; }
+    .hdr-balance { background-color: #FFCCCC; }
+    .collapse-row {
+      background-color: #fff;
+    }
+      button.disclosure {
+      border: none;
+      background: none;
+      font-size: 1rem;
+    }
+    
+    /* .arrow{
+         font-family: Montserrat, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  width: 300px;
+  height: 100px;
+  line-height: 28px;
+  color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+  text-decoration: none solid rgb(0, 0, 0);
+  text-align: none solid rgb(0, 0, 0);
+    } */
+       body {
+            
+            font-family: Arial, sans-serif;
+        }
+        body p{
+            color: rgb(0, 0, 0);
+        }
+
+    .footer-section {
+            padding: 40px 0;
+        }
+        .text-yellow {
+            color: #ffe01f !important;
+        }
+        .border-bottom-yellow {
+            border-bottom: 3px solid #ffe01f;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .list-unstyled a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .list-unstyled a:hover {
+            color: #ffe01f;
+        }
+        .social-icon-circle {
+            background-color: #333;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        .social-icon-circle:hover {
+            background-color: #555;
+            color: #ffe01f;
+        }
+        .app-store-btn img {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .roles{
+            margin: 5px 20px 30px;
+            width: 250px;
+            text-align: center;
+            padding: 16px;
+            border: none;
+            min-height: 198px;
+            border-radius: 4px;
+            box-shadow: rgba(0, 0, 0, 0.15) 0px -1.7px 7.4px 0px, rgba(0, 0, 0, 0.25) 0px 2.3px 2.3px 0px;
+            background-color: rgb(255, 255, 255);
+        }
+        .roles button{
+            width: 100px;
+            height: 35px;
+            margin-top: 35px;
+            background-color: rgb(253, 213, 53);
+            border: none;
+            border-radius: 5px;
+        }
+            .roless{
+            width: 150px;
+            height: 45px;
+            margin-top: 35px;
+            font-size: 15px;
+            background-color: rgb(253, 213, 53);
+            border: none;
+            border-radius: 5px;
+        }
+        .apply{
+             width: 150px;
+            height: 40px;
+            font-size: 15px;
+            background-color: rgb(253, 213, 53);
+            border: none;
+            border-radius: 5px;
+        }
+
+        .banner1 , .banner2 ,.banner3, .banner4, .banner5{
+    width: 100%;
+    height: 500px;
+    background-size: cover;
+    background-position: top;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 900;
+}
+.banner1{
+background-image:  url(assests/img_T3.webp) ;
+}
+.banner2{
+    background-image: url(assests/img_T2.webp);
+}
+.banner3{
+    background-image: url(assests/img_T4.webp);
+}
+.banner4{
+    background-image: url(assests/img_T1.webp);
+}
+.banner5{
+    background-image: url(assests/img_T5.webp);
+
+}
+
+ footer {
+    color: #fff !important;
+  }
+  footer p, footer h3, footer h6 {
+    color: #fff !important;
+    margin: 6px 0;
+  }
+  footer p:hover, footer i:hover {
+    color: #FFD700 !important;
+    cursor: pointer;
+  }
+  
+
+      .collapse-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .collapse-toggle::after {
+      content: "▼"; 
+      font-size: 0.8rem;
+      transition: transform 0.3s;
+    }
+    .collapse-toggle[aria-expanded="true"]::after {
+      transform: rotate(-180deg);
+    }
+
+        
+
+        
+
+@media (min-width: 576px) {
+    .About{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+}
